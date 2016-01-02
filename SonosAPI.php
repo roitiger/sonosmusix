@@ -38,7 +38,7 @@ logMsg(0,"---------------REQUEST HEADER END-----------");
 //
 // Set some global debug flags
 //
-$logLevel = 3;
+$logLevel = 30;
 foreach ($_GET as $key => $value) {
     if ($key == "log") {
         $logLevel = (int)$value;
