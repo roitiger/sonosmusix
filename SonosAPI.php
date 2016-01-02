@@ -570,17 +570,17 @@ class SonosAPI
 
         $result = "";
         
-        if ($id == "artist") {
+        if ($id == "ARTIST") {
             
             $artists = $this->catalog->searchArtist($term,$index,$count);
             $result  = $this->mcFromArtists($artists);
             
-        } elseif ($id == "album") {
+        } elseif ($id == "ALBUM") {
 
             $albums = $this->catalog->searchAlbum($term,$index,$count);
             $result = $this->mcFromAlbums($albums);
             
-        } elseif ($id == "track") {
+        } elseif ($id == "TRACK") {
 
             $tracks = $this->catalog->searchTrack($term,$index,$count);
             $result = $this->mmdFromTracks($tracks);
