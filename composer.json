@@ -1,5 +1,6 @@
 {
   "require": {
-    "ext-soap": "*"
+    "ext-soap": "*",
+    "ext-sqlite3": "*"
   }
 }
