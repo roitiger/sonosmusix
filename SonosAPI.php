@@ -2,7 +2,7 @@
 
 include 'lib/localizer.php';
 include 'lib/backend.php';
-include 'MusixAPI.php'
+include 'MusixAPI.php';
 
 /////////////////////////////////////////////////////////////////////////////
 //
