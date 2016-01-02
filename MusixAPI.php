@@ -18,9 +18,18 @@ class MusixAPI
 
 //require_once '/app/vendor/rmccue/requests/library/Requests.php'; Requests::register_autoloader();
 
+  private function getMCTrackID($id, $fname) 
+  {
+    return 'TRACK:' . $id . ':' . $fname;
+  }
+
+  private function breakMCTrackID($trackid) 
+  {
+    return explode(":", $trackid, 3);
+  }
 
   private function mmdEntryFromTrack($track) {
-        $item_id = 'TRACK:' . $track['ID'];
+        $item_id = getMCTrackID($track['ID'], $track['MediaFileName']);
 
         list($h,$m,$s) = explode(":",$track['Duration']);
         $duration_sec = $s + ($m * 60) + ($h * 60 * 60);
@@ -45,7 +54,9 @@ class MusixAPI
         return $info;
     }
 
-    public function getMediaURL($id) {
+    public function getMediaURL($trackid) {
+      list($str, $id, $fname) = $this->breakMCTrackID($trackid);
+
       $url = 'http://musix-api.mboxltd.com/tokens/GetToken';
       // TODO do proper auth
       $headers = array(
@@ -60,7 +71,7 @@ class MusixAPI
       $data = array(
         'SongId' => $id,
         'UserId' => $_ENV['MUSIX_USER_ID'],
-        'MediaFileName' => '',
+        'MediaFileName' => $fname,
         'ServiceId' => '13');
 
       $response = Requests::post($url, $headers, json_encode($data));

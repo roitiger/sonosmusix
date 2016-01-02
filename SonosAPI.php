@@ -627,11 +627,7 @@ class SonosAPI
     function getMediaURI($args) {
         logMsg(0, "getMediaURI: " . $args->id);
         
-        $idarray      = $this->getID($args->id);        
-        $args->prefix = strtoupper(array_shift($idarray));
-        $id           = array_shift($idarray);
-
-        $url = $this->musix->getMediaURL($id);//$this->getMediaBaseURL() . "music.mp3";
+        $url = $this->musix->getMediaURL($args->id);//$this->getMediaBaseURL() . "music.mp3";
 
         return array('getMediaURIResult' => $url);
     }
