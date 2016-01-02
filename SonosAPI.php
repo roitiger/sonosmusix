@@ -38,7 +38,7 @@ logMsg(0,"---------------REQUEST HEADER END-----------");
 //
 // Set some global debug flags
 //
-$logLevel = 30;
+$logLevel = 3;
 foreach ($_GET as $key => $value) {
     if ($key == "log") {
         $logLevel = (int)$value;
@@ -59,9 +59,11 @@ function logMsg($level,$msg)
 {
     global $logLevel;
     
-    if ($level <= $logLevel) {
-        error_log($msg . "\r\n", 3, getLogFilePath());
-    }
+    //if ($level <= $logLevel) {
+    //    error_log($msg . "\r\n", 3, getLogFilePath());
+    //}
+    // Heroku logging
+    error_log($msg);
 }
 
 /////////////////////////////////////////////////////////////////////////////
