@@ -3,6 +3,7 @@
     "ext-soap": "*",
     "ext-pdo_sqlite": "*",
     "ext-sqlite3": "*",
-    "rmccue/requests": ">=1.0"
+    "rmccue/requests": ">=1.0",
+    "ext-memcached": "*"
   }
 }

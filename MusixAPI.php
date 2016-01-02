@@ -5,8 +5,14 @@ Requests::register_autoloader();
 
 class MusixAPI
 {
+  private $mc;
+
   function __construct() 
   {
+    $this->mc = new Memcached();
+    $this->mc->setOption(Memcached::OPT_BINARY_PROTOCOL, true);
+    $this->mc->addServers(array_map(function($server) { return explode(':', $server, 2); }, explode(',', $_ENV['MEMCACHEDCLOUD_SERVERS'])));
+    $this->mc->setSaslAuthData($_ENV['MEMCACHEDCLOUD_USERNAME'], $_ENV['MEMCACHEDCLOUD_PASSWORD']);
      
   }
 
@@ -14,8 +20,9 @@ class MusixAPI
 
 
   private function mmdEntryFromTrack($track) {
-        return array('itemType' => 'track',
-             'id'       => 'TRACK:' . $track['ID'],
+        $item_id = 'TRACK:' . $track['ID']
+        $info = array('itemType' => 'track',
+             'id'       => $item_id,
              'title'    => $track['Name'],
              'mimeType' => 'audio/mp3',
              'trackMetadata' =>
@@ -28,6 +35,7 @@ class MusixAPI
                      'canPlay'     => true,
                      'canSkip'     => true)
              );
+        $this->mc->set($item_id, $info);
     }
 
 

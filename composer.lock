@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9d24a19c1f9cd347e60e4fd5ec9a8d8a",
-    "content-hash": "6a11e40bdcf5a865f7516f49279aba9c",
+    "hash": "04d6e52a7d788a2a797e4b31bd1038f7",
+    "content-hash": "df4a0f4ac417cf545c2730745b941c73",
     "packages": [
         {
             "name": "rmccue/requests",
@@ -66,7 +66,8 @@
     "platform": {
         "ext-soap": "*",
         "ext-pdo_sqlite": "*",
-        "ext-sqlite3": "*"
+        "ext-sqlite3": "*",
+        "ext-memcached": "*"
     },
     "platform-dev": []
 }
