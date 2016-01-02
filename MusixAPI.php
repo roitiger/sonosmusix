@@ -32,8 +32,8 @@ class MusixAPI
         $item_id = $this->getMCTrackID($track['ID'], $track['MediaFileName']);
 
         // Sometimes duration doesnt have the hours
-        $duration = $track['Duration']
-        if (substr_count($text, ':') == 1) {
+        $duration = $track['Duration'];
+        if (substr_count($duration, ':') == 1) {
           $duration = "00:" . $duration; 
         }
 
