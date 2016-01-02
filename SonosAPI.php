@@ -587,8 +587,9 @@ class SonosAPI
             
         } elseif ($id == "TRACK") {
 
-            $tracks = $this->catalog->searchTrack($term,$index,$count);
-            $result = $this->mmdFromTracks($tracks);
+            //$tracks = $this->catalog->searchTrack($term,$index,$count);
+            //$result = $this->mmdFromTracks($tracks);
+            $result = $this->musix->search($term);
             
         } else {
             
