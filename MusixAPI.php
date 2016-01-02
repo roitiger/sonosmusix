@@ -31,7 +31,13 @@ class MusixAPI
   private function mmdEntryFromTrack($track) {
         $item_id = $this->getMCTrackID($track['ID'], $track['MediaFileName']);
 
-        list($h,$m,$s) = explode(":",$track['Duration']);
+        // Sometimes duration doesnt have the hours
+        $duration = $track['Duration']
+        if (substr_count($text, ':') == 1) {
+          $duration = "00:" . $duration; 
+        }
+
+        list($h,$m,$s) = explode(":",$duration);
         $duration_sec = $s + ($m * 60) + ($h * 60 * 60);
 
         error_log("DURATION: " . $track['Duration'] . " => " . $duration_sec . "=" . $h . "=" . $m . "=" . $s);
