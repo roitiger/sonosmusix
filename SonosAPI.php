@@ -2,6 +2,7 @@
 
 include 'lib/localizer.php';
 include 'lib/backend.php';
+include 'MusixAPI.php'
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -84,6 +85,8 @@ class SonosAPI
     private $favorites;
     private $ratings;
 
+    private $musix;
+
     /////////////////////////////////////////////////////////////////////////////
     //
     // Constructor
@@ -99,6 +102,8 @@ class SonosAPI
 
         // NOTE: We only have one image, so grab the path here
         $this->defaultAlbumArtURI = $this->getMediaBaseURL() . "album.jpg";
+
+        $this->$musix = new MusixAPI();
     }
 
     /////////////////////////////////////////////////////////////////////////////
