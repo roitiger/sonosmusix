@@ -20,7 +20,7 @@ class MusixAPI
 
 
   private function mmdEntryFromTrack($track) {
-        $item_id = 'TRACK:' . $track['ID']
+        $item_id = 'TRACK:' . $track['ID'];
         $info = array('itemType' => 'track',
              'id'       => $item_id,
              'title'    => $track['Name'],
