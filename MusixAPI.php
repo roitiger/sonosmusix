@@ -29,7 +29,7 @@ class MusixAPI
   }
 
   private function mmdEntryFromTrack($track) {
-        $item_id = getMCTrackID($track['ID'], $track['MediaFileName']);
+        $item_id = $this->getMCTrackID($track['ID'], $track['MediaFileName']);
 
         list($h,$m,$s) = explode(":",$track['Duration']);
         $duration_sec = $s + ($m * 60) + ($h * 60 * 60);
