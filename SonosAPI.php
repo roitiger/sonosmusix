@@ -92,7 +92,7 @@ class SonosAPI
     // Constructor
     //
     
-    function SonosAPI()
+    function __construct()
     {
         // FIXME: This all needs to go into a single backend class that wraps the details.        
         $this->catalog   = new SimpleCatalog("database/brainz.sqlite");

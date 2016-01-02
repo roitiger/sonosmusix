@@ -13,7 +13,7 @@ class SimpleLocalizer
         return $this->l10n[$id];
     }
     
-    public function SimpleLocalizer($dataDirectory) {
+    public function __construct($dataDirectory) {
 
         //
         // Default to English for lack of anything better
