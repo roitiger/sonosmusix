@@ -103,7 +103,7 @@ class SonosAPI
         // NOTE: We only have one image, so grab the path here
         $this->defaultAlbumArtURI = $this->getMediaBaseURL() . "album.jpg";
 
-        $this->$musix = new MusixAPI();
+        //$this->$musix = new MusixAPI();
     }
 
     /////////////////////////////////////////////////////////////////////////////
