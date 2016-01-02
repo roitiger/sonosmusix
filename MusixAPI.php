@@ -8,9 +8,9 @@ class MusixAPI
   }
 
 //require_once '/app/vendor/rmccue/requests/library/Requests.php'; Requests::register_autoloader();
+/*
 
-
-  function mmdEntryFromTrack($track) {
+  private function mmdEntryFromTrack($track) {
         return array('itemType' => 'track',
              'id'       => 'TRACK:' . $track['ID'],
              'title'    => $track['Name'],
@@ -28,7 +28,7 @@ class MusixAPI
     }
 
 
-function mmdFromTracks($tracks) {
+private function mmdFromTracks($tracks) {
         
         $mediaMD = array();
 
@@ -45,7 +45,7 @@ function mmdFromTracks($tracks) {
         return $result;
     }
 
-  function searchTracks($term)
+  private function searchTracks($term)
   {
     $resp = Requests::get(
       'http://musix-api.mboxltd.com/search/SolrSearch/SearchItem?type=0&paramType=1&is_exact=0&term='.
@@ -56,11 +56,11 @@ function mmdFromTracks($tracks) {
     return $tracks["Songs"];
   }
 
-  function search($term) {
+  public function search($term) {
     $tracks = searchTracks($term);
     return mmdFromTracks($tracks);
   }
-
+*/
 }
 
 
