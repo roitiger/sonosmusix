@@ -618,7 +618,7 @@ class SonosAPI
             return array('getMediaMetadataResult' => $this->mmdEntryFromTrack($track));
         }*/
 
-        return $this->musix->getMediaMetadata($id);
+        return array('getMediaMetadataResult' => $this->musix->getMediaMetadata($args->id));
 
         
         throw new SoapFault('Client.ItemNotFound', l10n("MSG_SOAPFAULT_ITEM_NOT_FOUND"));
