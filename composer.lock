@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "678cc28dca5dcb497715516835a56fe8",
-    "content-hash": "5d09456b551ddd6cce5481e2336cceba",
+    "hash": "ae1ccdc075feb8f5eb5314d46f9bb4f5",
+    "content-hash": "ab0786fc4a69fc6d8923a3a69769dcf9",
     "packages": [],
     "packages-dev": [],
     "aliases": [],
@@ -15,6 +15,7 @@
     "prefer-lowest": false,
     "platform": {
         "ext-soap": "*",
+        "ext-pdo_sqlite": "*",
         "ext-sqlite3": "*"
     },
     "platform-dev": []
