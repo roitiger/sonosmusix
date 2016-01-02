@@ -2,7 +2,7 @@
 
 class MusixAPI
 {
-  function MusixAPI() 
+  function __construct() 
   {
      
   }
@@ -10,37 +10,21 @@ class MusixAPI
 //require_once '/app/vendor/rmccue/requests/library/Requests.php'; Requests::register_autoloader();
 
 
-function mmdEntryFromTrack($track) {
-
-    //    if (!isset($track['albumart'])) {
-      //      $track['albumart']  = $this->defaultAlbumArtURI;
-       // }
-        
-//        $dynamic = array();
-//        $dynamic[] = array('name' => "isStarred", 
-//                           'value' => $this->ratings->getRating($this->user, 'TRACK:' . $track['id'])
-//                          );
-//        $dynamic[] = array('name' => 'isRead', 
- //                          'value' => "true"
-  //                        );
-        
+  function mmdEntryFromTrack($track) {
         return array('itemType' => 'track',
-                     'id'       => 'TRACK:' . $track['ID'],
-                     'title'    => $track['Name'],
-                     'mimeType' => 'audio/mp3',
-                     'trackMetadata' =>
-                     array('artist'      => $track['Artist'],
-                           'artistId'    => "ARTIST:" . $track['ArtistId'],
-                           'album'       => $track['Album'],
-                           'albumId'     => "ALBUM:" . $track['AlbumId'],
-                           'duration'    => 30, // $track['Duration'],
-                           //'rating'      => $this->ratings->getRating($this->user, $track['id']),
-                           'index'       => $track['ID'],
-                           'canPlay'     => true,
-                           'canSkip'     => true//,
-                           //'albumArtURI' => $track['albumart']),
-                           //'dynamic'     => $dynamic
-                     ));
+             'id'       => 'TRACK:' . $track['ID'],
+             'title'    => $track['Name'],
+             'mimeType' => 'audio/mp3',
+             'trackMetadata' =>
+               array('artist'      => $track['Artist'],
+                     'artistId'    => "ARTIST:" . $track['ArtistId'],
+                     'album'       => $track['Album'],
+                     'albumId'     => "ALBUM:" . $track['AlbumId'],
+                     'duration'    => 30, // $track['Duration'],
+                     'index'       => $track['ID'],
+                     'canPlay'     => true,
+                     'canSkip'     => true)
+             );
     }
 
 
@@ -73,8 +57,8 @@ function mmdFromTracks($tracks) {
   }
 
   function search($term) {
-    $tracks=this->searchTracks($term);
-    return this->mmdFromTracks($tracks);
+    $tracks = searchTracks($term);
+    return mmdFromTracks($tracks);
   }
 
 }
