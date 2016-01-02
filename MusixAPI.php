@@ -33,7 +33,7 @@ private function mmdFromTracks($tracks) {
         $mediaMD = array();
 
         foreach ($tracks as $track) {
-            $mediaMD[] = mmdEntryFromTrack($track);
+            $mediaMD[] = $this->mmdEntryFromTrack($track);
         }
         
         $result = new StdClass();
@@ -57,8 +57,8 @@ private function mmdFromTracks($tracks) {
   }
 
   public function search($term) {
-    $tracks = searchTracks($term);
-    return mmdFromTracks($tracks);
+    $tracks = $this->searchTracks($term);
+    return $this->mmdFromTracks($tracks);
   }
 
 }
