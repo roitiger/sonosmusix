@@ -36,6 +36,8 @@ class MusixAPI
                      'canSkip'     => true)
              );
         $this->mc->set($item_id, $info);
+
+        return $info;
     }
 
 
@@ -70,6 +72,11 @@ private function mmdFromTracks($tracks) {
   public function search($term) {
     $tracks = $this->searchTracks($term);
     return $this->mmdFromTracks($tracks);
+  }
+
+  public function getMediaMetadata($mediaID)
+  {
+    return $this->mc->get($mediaID);
   }
 
 }

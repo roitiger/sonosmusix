@@ -611,12 +611,15 @@ class SonosAPI
         $idarray      = $this->getID($args->id);        
         $args->prefix = strtoupper(array_shift($idarray));
         $id           = array_shift($idarray);
-        
+        /*
         $tracks = $this->catalog->browseTrack($id);
         
         foreach ($tracks['data'] as $track) {
             return array('getMediaMetadataResult' => $this->mmdEntryFromTrack($track));
-        }
+        }*/
+
+        return $this->musix->getMediaMetadata($id);
+
         
         throw new SoapFault('Client.ItemNotFound', l10n("MSG_SOAPFAULT_ITEM_NOT_FOUND"));
     }
