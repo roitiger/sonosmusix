@@ -21,6 +21,10 @@ class MusixAPI
 
   private function mmdEntryFromTrack($track) {
         $item_id = 'TRACK:' . $track['ID'];
+
+        list($h,$m,$s) = explode(":",$track['Duration']);
+        $duration_sec = $s + ($m * 60) + ($h * 60 * 60);
+
         $info = array('itemType' => 'track',
              'id'       => $item_id,
              'title'    => $track['Name'],
@@ -30,16 +34,39 @@ class MusixAPI
                      'artistId'    => "ARTIST:" . $track['ArtistId'],
                      'album'       => $track['Album'],
                      'albumId'     => "ALBUM:" . $track['AlbumId'],
-                     'duration'    => 30, // $track['Duration'],
+                     'duration'    => $duration_sec,
                      'index'       => $track['ID'],
                      'canPlay'     => true,
-                     'canSkip'     => true)
+                     'canSkip'     => true,
+                     'albumArtURI' => $track['ImageURL'])
              );
         $this->mc->set($item_id, $info);
 
         return $info;
     }
 
+    public function getMediaURL($id) {
+      $url = 'http://musix-api.mboxltd.com/tokens/GetToken';
+      // TODO do proper auth
+      $headers = array(
+        'mBoxUserToken' => $_ENV['MUSIX_BEARER_TOKEN'],
+        'User-Agent' => 'Musix/27000 (iPhone; iOS 9.2; Scale/2.00)',
+        'Content-Type' => 'application/json',
+        'Cookie' => 'ai_user=' . $_ENV['MUSIX_USER_COOKIE'],
+        'Accept' => 'application/json',
+        'Accept-Language' => 'en-US;q=1, he-US;q=0.9',
+        'Accept-Encoding' => 'gzip, deflate');
+
+      $data = array(
+        'SongId' => $id,
+        'UserId' => $_ENV['MUSIX_USER_ID'],
+        'MediaFileName' => '',
+        'ServiceId' => '13');
+
+      $response = Requests::post($url, $headers, json_encode($data));
+
+      return $response->body;
+    }
 
 private function mmdFromTracks($tracks) {
         
