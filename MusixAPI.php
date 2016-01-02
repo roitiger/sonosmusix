@@ -34,7 +34,7 @@ class MusixAPI
         list($h,$m,$s) = explode(":",$track['Duration']);
         $duration_sec = $s + ($m * 60) + ($h * 60 * 60);
 
-        error_log("DURATION: " . $track['Duration'] . " => " . $duration_sec);
+        error_log("DURATION: " . $track['Duration'] . " => " . $duration_sec . "=" . $h . "=" . $m . "=" . $s);
 
         $info = array('itemType' => 'track',
              'id'       => $item_id,
