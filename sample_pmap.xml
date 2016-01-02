@@ -1,4 +1,17 @@
 <Presentation>
+
+
+<PresentationMap type="Search">
+    <Match>
+        <SearchCategories>
+            <Category mappedId="artist" id="artists"/>
+            <Category mappedId="album" id="albums"/>
+            <Category mappedId="track" id="tracks"/>
+            <Category mappedId="playlist" id="playlists"/>
+        </SearchCategories>
+    </Match>
+</PresentationMap>
+
 <!-- the NowPlayingRatings presentationMap maps dynamic data (for a track) to
      presentation information used on the Sonos Now Playing screen -->
 <PresentationMap type="NowPlayingRatings">
