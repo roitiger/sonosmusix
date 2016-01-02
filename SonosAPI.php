@@ -569,7 +569,7 @@ class SonosAPI
         $count = $args->count;
 
         $result = "";
-        
+
         if ($id == "ARTIST") {
             
             $artists = $this->catalog->searchArtist($term,$index,$count);

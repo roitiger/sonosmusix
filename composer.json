@@ -2,6 +2,7 @@
   "require": {
     "ext-soap": "*",
     "ext-pdo_sqlite": "*",
-    "ext-sqlite3": "*"
+    "ext-sqlite3": "*",
+    "rmccue/requests": ">=1.0"
   }
 }
