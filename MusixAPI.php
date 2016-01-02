@@ -76,7 +76,9 @@ class MusixAPI
 
       $response = Requests::post($url, $headers, json_encode($data));
 
-      return $response->body;
+      $parsed = json_decode($response->body, True);
+
+      return $parsed["URL"];
     }
 
 private function mmdFromTracks($tracks) {
