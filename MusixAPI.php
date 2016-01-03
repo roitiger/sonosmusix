@@ -142,7 +142,7 @@ private function mmdFromTracks($tracks) {
   }
 
   public function searchArtists($term) {
-    $artists = $this->searchArtists($term);
+    $artists = $this->musixSearchArtists($term);
     return $this->mcFromArtists($artists);
   }
 
