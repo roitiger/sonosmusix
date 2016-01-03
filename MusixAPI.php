@@ -62,9 +62,6 @@ class MusixAPI
     }
 
     function mcEntryFromArtist($artist) {
-        
-        logMsg(1, "mcEntryFromArtist: id: " . $artist['ID'] . " : " . $artist['Name']);
-
         $result = array('itemType' => 'artist',
                         'id'       => 'ARTIST:' . $artist['ID'],
                         'artistid' => 'ARTIST:' . $artist['ID'],
@@ -98,7 +95,8 @@ private function mmdFromTracks($tracks) {
         // This grabs a list of artists from the backend and converts it to a MediaCollection.
         $mediaColl = array();
         
-        foreach ($artists as $artist) {            
+        foreach ($artists as $artist) {
+            error_log($artist['Name']);
             $mediaColl[] = $this->mcEntryFromArtist($artist);
         }
         
@@ -113,11 +111,17 @@ private function mmdFromTracks($tracks) {
 
   private function musixSearch($term, $type)
   {
-    $resp = Requests::get(
-      'http://musix-api.mboxltd.com/search/SolrSearch/SearchItem?type='.$type.'&paramType=1&is_exact=0&term='.
-        $term.'&size=100');
+    $url = 'http://musix-api.mboxltd.com/search/SolrSearch/SearchItem?type='.$type.
+      '&paramType=1&is_exact=0&term='.$term.'&size=100';
+
+    error_log('QUERYING SEARCH: ' . $url);
+
+    $resp = Requests::get($url);
+
 
     $items = json_decode($resp->body, True);
+
+    error_log($resp->body);
 
     return $items;
   }
