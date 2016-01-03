@@ -23,6 +23,7 @@ class MusixAPI
     return 'TRACK:' . $id . ':' . $fname;
   }
 
+  // Returns TRACK, <id>, <media_filename>
   private function breakMCTrackID($trackid) 
   {
     return explode(":", $trackid, 3);
@@ -39,8 +40,6 @@ class MusixAPI
 
         list($h,$m,$s) = explode(":",$duration);
         $duration_sec = $s + ($m * 60) + ($h * 60 * 60);
-
-        error_log("DURATION: " . $track['Duration'] . " => " . $duration_sec . "=" . $h . "=" . $m . "=" . $s);
 
         $info = array('itemType' => 'track',
              'id'       => $item_id,
@@ -62,7 +61,93 @@ class MusixAPI
         return $info;
     }
 
-    public function getMediaURL($trackid) {
+    function mcEntryFromArtist($artist) {
+        
+        logMsg(1, "mcEntryFromArtist: id: " . $artist['ID'] . " : " . $artist['Name']);
+
+        $result = array('itemType' => 'artist',
+                        'id'       => 'ARTIST:' . $artist['ID'],
+                        'artistid' => 'ARTIST:' . $artist['ID'],
+                        'title'    => $artist['Name'],
+                        'albumArtURI' => $artist['ImageURL']);
+
+        return $result;
+    }
+
+    
+
+private function mmdFromTracks($tracks) {
+        
+        $mediaMD = array();
+
+        foreach ($tracks as $track) {
+            $mediaMD[] = $this->mmdEntryFromTrack($track);
+        }
+        
+        $result = new StdClass();
+        $result->index = 0; //$tracks['index'];
+        $result->total = count($mediaMD);//$tracks['total'];
+        $result->count = count($mediaMD);
+        $result->mediaMetadata = $mediaMD;
+
+        return $result;
+    }
+    
+
+    function mcFromArtists($artists) {
+        // This grabs a list of artists from the backend and converts it to a MediaCollection.
+        $mediaColl = array();
+        
+        foreach ($artists as $artist) {            
+            $mediaColl[] = $this->mcEntryFromArtist($artist);
+        }
+        
+        $result = new StdClass();
+        $result->index = 0;
+        $result->total = count($mediaColl);
+        $result->count = count($mediaColl);
+        $result->mediaCollection = $mediaColl;
+
+        return $result;
+    }
+
+  private function musixSearch($term, $type)
+  {
+    $resp = Requests::get(
+      'http://musix-api.mboxltd.com/search/SolrSearch/SearchItem?type='.$type.'&paramType=1&is_exact=0&term='.
+        $term.'&size=100');
+
+    $items = json_decode($resp->body, True);
+
+    return $items;
+  }
+
+  private function musixSearchTracks($term)
+  {
+    return $this->musixSearch($term, 0)["Songs"];
+  }
+
+  private function musixSearchArtists($term)
+  {
+    return $this->musixSearch($term, 2)["Artists"];
+  }
+
+  public function searchTracks($term) {
+    $tracks = $this->musixSearchTracks($term);
+    return $this->mmdFromTracks($tracks);
+  }
+
+  public function searchArtists($term) {
+    $artists = $this->searchArtists($term);
+    return $this->mcFromArtists($artists);
+  }
+
+  public function getMediaMetadata($mediaID)
+  {
+    return $this->mc->get($mediaID);
+  }
+
+  public function getMediaURL($trackid) {
       list($str, $id, $fname) = $this->breakMCTrackID($trackid);
 
       $url = 'http://musix-api.mboxltd.com/tokens/GetToken';
@@ -88,44 +173,6 @@ class MusixAPI
 
       return $parsed["URL"];
     }
-
-private function mmdFromTracks($tracks) {
-        
-        $mediaMD = array();
-
-        foreach ($tracks as $track) {
-            $mediaMD[] = $this->mmdEntryFromTrack($track);
-        }
-        
-        $result = new StdClass();
-        $result->index = 0; //$tracks['index'];
-        $result->total = count($mediaMD);//$tracks['total'];
-        $result->count = count($mediaMD);
-        $result->mediaMetadata = $mediaMD;
-
-        return $result;
-    }
-
-  private function searchTracks($term)
-  {
-    $resp = Requests::get(
-      'http://musix-api.mboxltd.com/search/SolrSearch/SearchItem?type=0&paramType=1&is_exact=0&term='.
-        $term.'&size=100');
-
-    $tracks = json_decode($resp->body, True);
-
-    return $tracks["Songs"];
-  }
-
-  public function search($term) {
-    $tracks = $this->searchTracks($term);
-    return $this->mmdFromTracks($tracks);
-  }
-
-  public function getMediaMetadata($mediaID)
-  {
-    return $this->mc->get($mediaID);
-  }
 
 }
 
