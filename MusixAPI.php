@@ -169,7 +169,7 @@ private function mmdFromTracks($tracks) {
       $url = 'http://musix-simplay.s3-eu-west-1.amazonaws.com/Customers/13/Data/Artists/artist_'.$id.'.json';
       $resp = Requests::get($url);
 
-      $items = json_decode(removeBOM($resp->body), True);
+      $items = json_decode($this->removeBOM($resp->body), True);
 
       return $items['Albums'];
     }
