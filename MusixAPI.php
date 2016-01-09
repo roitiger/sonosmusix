@@ -213,8 +213,7 @@ private function mmdFromTracks($tracks) {
                         'id'           => $playlist_id,
                         'title'        => $playlist['Name'],
                         'canPlay'      => true,
-                        'canEnumerate' => true,
-                        'canCache'     => true);
+                        'canEnumerate' => true);
 
         return $result;
     }

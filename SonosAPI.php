@@ -225,7 +225,7 @@ class SonosAPI
         $result->index = 0;
 
         // This media collection is the root browse menu.
-        /*
+        
         $mediaColl[] = array('itemType' => 'favorites',
                              'id' => 'FAVORITES',
                              'title' => l10n("MSG_BROWSE_FAVORITES"));
@@ -237,7 +237,7 @@ class SonosAPI
         $mediaColl[] = array('itemType' => 'collection',
                              'id' => 'CATALOG',
                              'title' => l10n("MSG_BROWSE_CATALOG"));
-        */
+        
 
         $mediaColl[] = array('itemType' => 'collection',
                              'id' => 'PLAYLISTS',
@@ -417,9 +417,7 @@ class SonosAPI
     }
 
     function getMD_PLAYLISTS($args) {        
-        $favorites = $this->catalog->browseStaffFavorites($args->index, $args->count);
-        return $this->mcFromArtists($favorites);        
-        //return $this->musix->getMyPlaylists();
+        return $this->musix->getMyPlaylists();
     }
 
     function getMD_STAFF($args) {        
