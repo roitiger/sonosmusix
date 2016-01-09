@@ -35,10 +35,26 @@ class MusixAPI
     return explode(":", $trackid, 3);
   }
 
+  private function getArtistID($id) 
+  {
+    return 'ARTIST:' . $id;
+  }
+
   // Returns ARTIST, <id>
   private function breakArtistID($artistid) 
   {
     return explode(":", $artistid, 2);
+  }
+
+  private function getAlbumID($artist_id, $album_id) 
+  {
+    return 'ALBUM:' . $artist_id . ':' . $album_id;
+  }
+
+  // Returns ALBUM, <artist_id>, <album_id>
+  private function breakAlbumID($albumid) 
+  {
+    return explode(":", $albumid, 3);
   }
 
   private function mmdEntryFromTrack($track) {
@@ -137,14 +153,16 @@ private function mmdFromTracks($tracks) {
         return $result;
       }
 
-      private function mcEntryFromAlbum($album) {
+      private function mcEntryFromAlbum($artist, $album) {
         
-        logMsg(1, "mcEntryFromAlbum: id: " . $album['ID']);
-        
+        $album_id = $this->getAlbumID($artist['ID'], $album['ID']);
+
+        logMsg(1, "mcEntryFromAlbum: id: " . $album_id);
+
         $result = array('itemType'     => 'album',
-                        'id'           => 'ALBUM:' . $album['ID'],
+                        'id'           => $album_id,
                         'title'        => $album['Name'],
-                        'artist'       => $album['Name'],
+                        'artist'       => $artist['Name'],
                         'canPlay'      => true,
                         'canEnumerate' => true,
                         'canCache'     => true);
@@ -152,13 +170,8 @@ private function mmdFromTracks($tracks) {
         $result['albumArtURI']  = $album['ImageURL'];
         
         // ExtendedMetadata has to set artistId and albumId
-        if (isset($album['artistid'])) {
-            $result['artistId'] = "ARTIST:" . $album['artistid'];
-        }
-        
-        if (isset($album['ID'])) {
-            $result['albumId'] = "ALBUM:" . $album['ID'];
-        }
+        $result['artistId'] = $this->getArtistID($artist['ID']);
+        $result['albumId'] = $album_id;
 
         return $result;
     }
@@ -171,13 +184,13 @@ private function mmdFromTracks($tracks) {
 
       $items = json_decode($this->removeBOM($resp->body), True);
 
-      return $items['Albums'];
+      return [$items['Artist'], $items['Albums']];
     }
 
     public function getArtistAlbumsMetadata($id)
     {
-      $albums = $this->musixArtistAlbums($id);
-      return $this->mcFromAlbums($albums);
+      list($artist, $albums) = $this->musixArtistAlbums($id);
+      return $this->mcFromAlbums($artist, $albums);
     }
 
 
