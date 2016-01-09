@@ -63,7 +63,7 @@ class MusixAPI
     $is_public_playlist = (substr($id, 0, 3) == 'pub');
     $id = substr($id, 3);
     
-    return list($a, $id, $is_public_playlist);
+    return [$a, $id, $is_public_playlist];
   }
 
   private function getAlbumID($album_id, $artist_id) 
