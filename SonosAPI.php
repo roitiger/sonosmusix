@@ -559,8 +559,9 @@ class SonosAPI
     }
     
     function getMD_ALBUM($args) {        
-        $tracks = $this->catalog->browseAlbum($args->id,$args->index,$args->count);
-        return $this->mmdFromTracks($tracks);
+        //$tracks = $this->catalog->browseAlbum($args->id,$args->index,$args->count);
+        //return $this->mmdFromTracks($tracks);
+        return $this->musix->getAlbumMetadata($args->id);
     }
     
     /////////////////////////////////////////////////////////////////////////////

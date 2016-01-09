@@ -46,12 +46,12 @@ class MusixAPI
     return explode(":", $artistid, 2);
   }
 
-  private function getAlbumID($artist_id, $album_id) 
+  private function getAlbumID($album_id, $artist_id) 
   {
-    return 'ALBUM:' . $artist_id . ':' . $album_id;
+    return 'ALBUM:' . $album_id . ':' . $artist_id;
   }
 
-  // Returns ALBUM, <artist_id>, <album_id>
+  // Returns ALBUM, <album_id>, <artist_id>
   private function breakAlbumID($albumid) 
   {
     return explode(":", $albumid, 3);
@@ -155,7 +155,7 @@ private function mmdFromTracks($tracks) {
 
       private function mcEntryFromAlbum($artist, $album) {
         
-        $album_id = $this->getAlbumID($artist['ID'], $album['ID']);
+        $album_id = $this->getAlbumID($album['ID'], $artist['ID']);
 
         logMsg(1, "mcEntryFromAlbum: id: " . $album_id);
 
@@ -176,6 +176,17 @@ private function mmdFromTracks($tracks) {
         return $result;
     }
 
+    private function musixAlbumTracks($id)
+    {
+      $url = 'http://musix-simplay.s3-eu-west-1.amazonaws.com/Customers/13/Data/Albums/album_'.$id.'.json';
+      $resp = Requests::get($url);
+
+      $items = json_decode($this->removeBOM($resp->body), True);
+
+      return $items['Tracks'];
+    }
+
+
 
     private function musixArtistAlbums($id)
     {
@@ -191,6 +202,14 @@ private function mmdFromTracks($tracks) {
     {
       list($artist, $albums) = $this->musixArtistAlbums($id);
       return $this->mcFromAlbums($artist, $albums);
+    }
+
+    public function getAlbumMetadata($id)
+    {
+      list($a, $album_id, $artist_id) = $this->breakAlbumID($id);
+      $tracks = $this->musixAlbumTracks($artist_id);
+
+      return $this->mmdFromTracks($tracks);
     }
 
 
