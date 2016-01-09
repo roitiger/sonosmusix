@@ -136,12 +136,12 @@ private function mmdFromTracks($tracks) {
         return $result;
     }
 
-    private function mcFromAlbums($albums) {
+    private function mcFromAlbums($artist, $albums) {
 
         $mediaColl = array();
         
         foreach ($albums as $album) {
-            $mediaColl[] = $this->mcEntryFromAlbum($album);
+            $mediaColl[] = $this->mcEntryFromAlbum($artist, $album);
         }
         
         $result = new StdClass();
