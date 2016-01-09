@@ -417,9 +417,9 @@ class SonosAPI
     }
 
     function getMD_PLAYLISTS($args) {        
-        //$favorites = $this->catalog->browseStaffFavorites($args->index, $args->count);
-        //return $this->mcFromArtists($favorites);        
-        return $this->musix->getMyPlaylists();
+        $favorites = $this->catalog->browseStaffFavorites($args->index, $args->count);
+        return $this->mcFromArtists($favorites);        
+        //return $this->musix->getMyPlaylists();
     }
 
     function getMD_STAFF($args) {        
