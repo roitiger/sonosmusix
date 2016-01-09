@@ -244,7 +244,7 @@ private function mmdFromTracks($tracks) {
 
     private function musixMyPlaylists($user_guid)
     {
-      $url = 'http://musix-simplay.s3-eu-west-1.amazonaws.com/Customers/13/Users/' . $user_guid . '/Playlists.json';
+      $url = 'http://musix-simplay.s3-eu-west-1.amazonaws.com/Customers/13/Users/' . strtoupper($user_guid) . '/Playlists.json';
       error_log($url);
       $resp = Requests::get($url);
 
