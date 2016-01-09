@@ -282,7 +282,7 @@ private function mmdFromTracks($tracks) {
 
     public function getPlaylistTracks($id)
     {
-      list($a, $playlist_id, $is_public_playlist) = this->breakPlaylistID($id, True);
+      list($a, $playlist_id, $is_public_playlist) = $this->breakPlaylistID($id, True);
       $tracks = $this->musixPlaylistTracks($playlist_id, $_ENV['MUSIX_USER_ID'], $is_public_playlist);
       return $this->mmdFromTracks($tracks);
     }
