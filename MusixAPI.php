@@ -237,7 +237,7 @@ private function mmdFromTracks($tracks) {
     {
       $url = 'http://musix-simplay.s3-eu-west-1.amazonaws.com/Customers/13/Data/Albums/album_'.$id.'.json';
 
-      return getJSONURL($url)['Tracks'];
+      return $this->getJSONURL($url)['Tracks'];
     }
 
 
@@ -249,14 +249,14 @@ private function mmdFromTracks($tracks) {
         $url = 'http://musix-simplay.s3.amazonaws.com/Customers/13/Users/' . strtoupper($user_guid) . '/Playlist_' . $id . '.json';
       }
 
-      return getJSONURL($url)['Items'];
+      return $this->getJSONURL($url)['Items'];
     }
 
 
     private function musixArtistAlbums($id)
     {
       $url = 'http://musix-simplay.s3-eu-west-1.amazonaws.com/Customers/13/Data/Artists/artist_'.$id.'.json';
-      $items = getJSONURL($url);
+      $items = $this->getJSONURL($url);
 
       return [$items['Artist'], $items['Albums']];
     }
@@ -265,7 +265,7 @@ private function mmdFromTracks($tracks) {
     {
       $url = 'http://musix-simplay.s3-eu-west-1.amazonaws.com/Customers/13/Users/' . strtoupper($user_guid) . '/Playlists.json';
 
-      return getJSONURL($url)['Items'];
+      return $this->getJSONURL($url)['Items'];
     }
 
     public function getPlaylistTracks($id)
@@ -299,7 +299,7 @@ private function mmdFromTracks($tracks) {
     $url = 'http://musix-api.mboxltd.com/search/SolrSearch/SearchItem?type=' .
       $type . '&paramType=1&is_exact=0&term=' . $term . '&size=100';
 
-    return getJSONURL($url);
+    return $this->getJSONURL($url);
   }
 
   private function musixSearchTracks($term)
