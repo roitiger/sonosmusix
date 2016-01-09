@@ -182,6 +182,7 @@ private function mmdFromTracks($tracks) {
     private function musixAlbumTracks($id)
     {
       $url = 'http://musix-simplay.s3-eu-west-1.amazonaws.com/Customers/13/Data/Albums/album_'.$id.'.json';
+      error_log($url);
       $resp = Requests::get($url);
 
       $items = json_decode($this->removeBOM($resp->body), True);
