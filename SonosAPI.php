@@ -239,7 +239,7 @@ class SonosAPI
                              'title' => l10n("MSG_BROWSE_CATALOG"));
         */
 
-        $mediaColl[] = array('itemType' => 'playlists',
+        $mediaColl[] = array('itemType' => 'collection',
                              'id' => 'PLAYLISTS',
                              'title' => "My Playlists");
         
