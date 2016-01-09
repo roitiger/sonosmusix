@@ -18,6 +18,12 @@ class MusixAPI
 
 //require_once '/app/vendor/rmccue/requests/library/Requests.php'; Requests::register_autoloader();
 
+  private function removeBOM($data) {
+    if (0 === strpos(bin2hex($data), 'efbbbf')) {
+       return substr($data, 3);
+    }
+}
+
   private function getMCTrackID($id, $fname) 
   {
     return 'TRACK:' . $id . ':' . $fname;
@@ -27,6 +33,12 @@ class MusixAPI
   private function breakMCTrackID($trackid) 
   {
     return explode(":", $trackid, 3);
+  }
+
+  // Returns ARTIST, <id>
+  private function breakArtistID($artistid) 
+  {
+    return explode(":", $artistid, 2);
   }
 
   private function mmdEntryFromTrack($track) {
@@ -96,7 +108,6 @@ private function mmdFromTracks($tracks) {
         $mediaColl = array();
         
         foreach ($artists as $artist) {
-            error_log($artist['Name']);
             $mediaColl[] = $this->mcEntryFromArtist($artist);
         }
         
@@ -109,19 +120,76 @@ private function mmdFromTracks($tracks) {
         return $result;
     }
 
+    private function mcFromAlbums($albums) {
+
+        $mediaColl = array();
+        
+        foreach ($albums as $album) {
+            $mediaColl[] = $this->mcEntryFromAlbum($album);
+        }
+        
+        $result = new StdClass();
+        $result->index = 0;
+        $result->total = count($mediaColl);
+        $result->count = count($mediaColl);
+        $result->mediaCollection = $mediaColl;
+
+        return $result;
+      }
+
+      private function mcEntryFromAlbum($album) {
+        
+        logMsg(1, "mcEntryFromAlbum: id: " . $album['ID']);
+        
+        $result = array('itemType'     => 'album',
+                        'id'           => 'ALBUM:' . $album['ID'],
+                        'title'        => $album['Name'],
+                        'artist'       => $album['Name'],
+                        'canPlay'      => true,
+                        'canEnumerate' => true,
+                        'canCache'     => true);
+
+        $result['albumArtURI']  = $album['ImageURL'];
+        
+        // ExtendedMetadata has to set artistId and albumId
+        if (isset($album['artistid'])) {
+            $result['artistId'] = "ARTIST:" . $album['artistid'];
+        }
+        
+        if (isset($album['ID'])) {
+            $result['albumId'] = "ALBUM:" . $album['ID'];
+        }
+
+        return $result;
+    }
+
+
+    private function musixArtistAlbums($id)
+    {
+      $url = 'http://musix-simplay.s3-eu-west-1.amazonaws.com/Customers/13/Data/Artists/artist_'.$id.'.json';
+      $resp = Requests::get($url);
+
+      $items = json_decode(removeBOM($resp->body), True);
+
+      return $items['Albums'];
+    }
+
+    public function getArtistAlbumsMetadata($id)
+    {
+      $albums = $this->musixArtistAlbums($id);
+      return $this->mcFromAlbums($albums);
+    }
+
+
+
   private function musixSearch($term, $type)
   {
-    $url = 'http://musix-api.mboxltd.com/search/SolrSearch/SearchItem?type='.$type.
-      '&paramType=1&is_exact=0&term='.$term.'&size=100';
-
-    error_log('QUERYING SEARCH: ' . $url);
+    $url = 'http://musix-api.mboxltd.com/search/SolrSearch/SearchItem?type=' .
+      $type . '&paramType=1&is_exact=0&term=' . $term . '&size=100';
 
     $resp = Requests::get($url);
 
-
     $items = json_decode($resp->body, True);
-
-    error_log($resp->body);
 
     return $items;
   }
