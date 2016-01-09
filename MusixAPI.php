@@ -210,10 +210,14 @@ private function mmdFromTracks($tracks) {
         $playlist_id = $this->getPlaylistID($playlist['ID']);
 
         error_log($playlist['Name']);
+        $playlist_name = $playlist['Name'];
+        if (!isset($playlist['Name']) || (strlen($playlist_name) == 0)) {
+          $playlist_name = 'NONAME';
+        }
 
         $result = array('itemType'     => 'playlist',
                         'id'           => $playlist_id,
-                        'title'        => "TIGER",//$playlist['Name'],
+                        'title'        => $playlist_name,
                         'canPlay'      => true,
                         'canEnumerate' => true);
 
