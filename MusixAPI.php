@@ -209,6 +209,8 @@ private function mmdFromTracks($tracks) {
         
         $playlist_id = $this->getPlaylistID($playlist['ID']);
 
+        error_log($playlist['Name']);
+
         $result = array('itemType'     => 'playlist',
                         'id'           => $playlist_id,
                         'title'        => "TIGER",//$playlist['Name'],
