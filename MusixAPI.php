@@ -60,7 +60,7 @@ class MusixAPI
     } else {
       list($a, $id) = explode(":", $playlistid, 2);
     }
-    $is_public_playlist = substr($id, 0, 3) == 'pub';
+    $is_public_playlist = (substr($id, 0, 3) == 'pub');
     $id = substr($id, 3);
     
     return list($a, $id, $is_public_playlist);
