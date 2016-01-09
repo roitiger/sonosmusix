@@ -238,7 +238,7 @@ private function mmdFromTracks($tracks) {
 
     private function musixPlaylistTracks($id, $user_guid)
     {
-      $url = 'http://musix-simplay.s3.amazonaws.com/Customers/13/Users/' . strtoupper($user_guid) . '/Playlist_' $id . '.json';
+      $url = 'http://musix-simplay.s3.amazonaws.com/Customers/13/Users/' . strtoupper($user_guid) . '/Playlist_' . $id . '.json';
       $resp = Requests::get($url);
 
       $items = json_decode($this->removeBOM($resp->body), True);
