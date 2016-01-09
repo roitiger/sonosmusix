@@ -210,7 +210,7 @@ private function mmdFromTracks($tracks) {
         $playlist_id = $this->getPlaylistID($playlist['ID']);
 
         $result = array('itemType'     => 'playlist',
-                        'id'           => '123',//$playlist_id,
+                        'id'           => $playlist_id,
                         'title'        => "TIGER",//$playlist['Name'],
                         'canPlay'      => true,
                         'canEnumerate' => true);
