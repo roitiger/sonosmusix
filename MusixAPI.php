@@ -61,8 +61,9 @@ class MusixAPI
       list($a, $id) = explode(":", $playlistid, 2);
     }
     $is_public_playlist = substr($id, 0, 3) == 'pub';
+    $id = substr($id, 3);
     
-    return list($a, substr($id, 3), $is_public_playlist);
+    return list($a, $id, $is_public_playlist);
   }
 
   private function getAlbumID($album_id, $artist_id) 
@@ -250,6 +251,7 @@ private function mmdFromTracks($tracks) {
       } else {
         $url = 'http://musix-simplay.s3.amazonaws.com/Customers/13/Users/' . strtoupper($user_guid) . '/Playlist_' . $id . '.json';
       }
+      error_log($url);
       $resp = Requests::get($url);
 
       $items = json_decode($this->removeBOM($resp->body), True);
