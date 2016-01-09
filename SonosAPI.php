@@ -567,6 +567,10 @@ class SonosAPI
         //return $this->mcFromAlbums($albums);
         return $this->musix->getArtistAlbumsMetadata($args->id);
     }
+
+    function getMD_PLAYLIST($args) {        
+        return $this->musix->getPlaylistTracks($args->id);
+    }
     
     function getMD_ALBUM($args) {        
         //$tracks = $this->catalog->browseAlbum($args->id,$args->index,$args->count);
