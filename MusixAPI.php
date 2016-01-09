@@ -22,6 +22,8 @@ class MusixAPI
       if (0 === strpos(bin2hex($data), 'efbbbf')) {
          return substr($data, 3);
       }
+
+      return $data;
   }
 
   private function getMCTrackID($id, $fname) 
