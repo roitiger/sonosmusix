@@ -46,15 +46,23 @@ class MusixAPI
     return explode(":", $artistid, 2);
   }
 
-  private function getPlaylistID($id) 
+  private function getPlaylistID($id, $is_public_playlist) 
   {
-    return 'PLAYLIST:' . $id;
+    return 'PLAYLIST:' . ($is_public_playlist ? 'pub' : 'prv') . $id;
   }
 
-  // Returns PLAYLIST, <id>
-  private function breakPlaylistID($playlistid) 
+  // Returns PLAYLIST, <id>, <is_public_playlist>
+  private function breakPlaylistID($playlistid, $no_header = False) 
   {
-    return explode(":", $playlistid, 2);
+    if ($no_header) {
+      $id = $playlistid;
+      $a = 'PLAYLIST';
+    } else {
+      list($a, $id) = explode(":", $playlistid, 2);
+    }
+    $is_public_playlist = substr($id, 0, 3) == 'pub';
+    
+    return list($a, substr($id, 3), $is_public_playlist);
   }
 
   private function getAlbumID($album_id, $artist_id) 
@@ -207,9 +215,8 @@ private function mmdFromTracks($tracks) {
 
     private function mcEntryFromPlaylist($playlist) {
         
-        $playlist_id = $this->getPlaylistID($playlist['ID']);
+        $playlist_id = $this->getPlaylistID($playlist['ID'], $playlist['IsSocialNetworkShare']);
 
-        error_log($playlist['Name']);
         $playlist_name = $playlist['Name'];
         if (!isset($playlist['Name']) || (strlen($playlist_name) == 0)) {
           $playlist_name = 'NONAME';
@@ -236,9 +243,13 @@ private function mmdFromTracks($tracks) {
     }
 
 
-    private function musixPlaylistTracks($id, $user_guid)
+    private function musixPlaylistTracks($id, $user_guid, $is_public_playlist)
     {
-      $url = 'http://musix-simplay.s3.amazonaws.com/Customers/13/Users/' . strtoupper($user_guid) . '/Playlist_' . $id . '.json';
+      if ($is_public_playlist) {
+        $url = 'http://musix-simplay.s3-eu-west-1.amazonaws.com/Customers/13/Data/Playlists/playlist_'.$id.'.json';
+      } else {
+        $url = 'http://musix-simplay.s3.amazonaws.com/Customers/13/Users/' . strtoupper($user_guid) . '/Playlist_' . $id . '.json';
+      }
       $resp = Requests::get($url);
 
       $items = json_decode($this->removeBOM($resp->body), True);
@@ -269,7 +280,8 @@ private function mmdFromTracks($tracks) {
 
     public function getPlaylistTracks($id)
     {
-      $tracks = $this->musixPlaylistTracks($id, $_ENV['MUSIX_USER_ID']);
+      list($a, $playlist_id, $is_public_playlist) = this->breakPlaylistID($id, True);
+      $tracks = $this->musixPlaylistTracks($playlist_id, $_ENV['MUSIX_USER_ID'], $is_public_playlist);
       return $this->mmdFromTracks($tracks);
     }
 
