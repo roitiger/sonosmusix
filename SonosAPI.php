@@ -225,6 +225,7 @@ class SonosAPI
         $result->index = 0;
 
         // This media collection is the root browse menu.
+        /*
         $mediaColl[] = array('itemType' => 'favorites',
                              'id' => 'FAVORITES',
                              'title' => l10n("MSG_BROWSE_FAVORITES"));
@@ -236,6 +237,11 @@ class SonosAPI
         $mediaColl[] = array('itemType' => 'collection',
                              'id' => 'CATALOG',
                              'title' => l10n("MSG_BROWSE_CATALOG"));
+        */
+
+        $mediaColl[] = array('itemType' => 'playlists',
+                             'id' => 'PLAYLISTS',
+                             'title' => "My Playlists");
         
         $result->total = $result->count = count($mediaColl);
         $result->mediaCollection = $mediaColl;      
@@ -410,6 +416,11 @@ class SonosAPI
         return $result;
     }
 
+    function getMD_PLAYLISTS($args) {        
+        $favorites = $this->catalog->browseStaffFavorites($args->index, $args->count);
+        return $this->mcFromArtists($favorites);        
+    }
+
     function getMD_STAFF($args) {        
         $favorites = $this->catalog->browseStaffFavorites($args->index, $args->count);
         return $this->mcFromArtists($favorites);        
@@ -578,20 +589,14 @@ class SonosAPI
         $result = "";
 
         if ($id == "ARTIST") {
-            
-            //$artists = $this->catalog->searchArtist($term,$index,$count);
-            //$result  = $this->mcFromArtists($artists);
             $result = $this->musix->searchArtists($term);
             
-        } elseif ($id == "ALBUM") {
+        //} elseif ($id == "ALBUM") {
 
-            $albums = $this->catalog->searchAlbum($term,$index,$count);
-            $result = $this->mcFromAlbums($albums);
+        //    $albums = $this->catalog->searchAlbum($term,$index,$count);
+        //    $result = $this->mcFromAlbums($albums);
             
         } elseif ($id == "TRACK") {
-
-            //$tracks = $this->catalog->searchTrack($term,$index,$count);
-            //$result = $this->mmdFromTracks($tracks);
             $result = $this->musix->searchTracks($term);
             
         } else {
@@ -614,12 +619,6 @@ class SonosAPI
         $idarray      = $this->getID($args->id);        
         $args->prefix = strtoupper(array_shift($idarray));
         $id           = array_shift($idarray);
-        /*
-        $tracks = $this->catalog->browseTrack($id);
-        
-        foreach ($tracks['data'] as $track) {
-            return array('getMediaMetadataResult' => $this->mmdEntryFromTrack($track));
-        }*/
 
         return array('getMediaMetadataResult' => $this->musix->getMediaMetadata($args->id));
 
@@ -630,7 +629,7 @@ class SonosAPI
     function getMediaURI($args) {
         logMsg(0, "getMediaURI: " . $args->id);
         
-        $url = $this->musix->getMediaURL($args->id);//$this->getMediaBaseURL() . "music.mp3";
+        $url = $this->musix->getMediaURL($args->id);
 
         return array('getMediaURIResult' => $url);
     }
