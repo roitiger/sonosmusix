@@ -212,6 +212,13 @@ private function mmdFromTracks($tracks) {
       list($a, $album_id, $artist_id) = $this->breakAlbumID($id);
       $tracks = $this->musixAlbumTracks($album_id);
 
+      error_log($album_id);
+      error_log($tracks);
+
+      foreach ($tracks as $track) {
+        error_log('TRACK' . $track['TrackNumber']);
+      }
+
       // TODO fix this
 
       return $this->mmdFromTracks($tracks);
