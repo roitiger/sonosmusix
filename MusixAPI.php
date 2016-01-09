@@ -207,7 +207,7 @@ private function mmdFromTracks($tracks) {
     public function getAlbumMetadata($id)
     {
       list($a, $album_id, $artist_id) = $this->breakAlbumID($id);
-      $tracks = $this->musixAlbumTracks($artist_id);
+      $tracks = $this->musixAlbumTracks($album_id);
 
       return $this->mmdFromTracks($tracks);
     }
