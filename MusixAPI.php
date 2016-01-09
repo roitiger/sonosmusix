@@ -19,10 +19,10 @@ class MusixAPI
 //require_once '/app/vendor/rmccue/requests/library/Requests.php'; Requests::register_autoloader();
 
   private function removeBOM($data) {
-    if (0 === strpos(bin2hex($data), 'efbbbf')) {
-       return substr($data, 3);
-    }
-}
+      if (0 === strpos(bin2hex($data), 'efbbbf')) {
+         return substr($data, 3);
+      }
+  }
 
   private function getMCTrackID($id, $fname) 
   {
@@ -106,6 +106,9 @@ private function mmdFromTracks($tracks) {
         $mediaMD = array();
 
         foreach ($tracks as $track) {
+            if (isset($track["Song"])) {
+              $track = $track["Song"];
+            }
             $mediaMD[] = $this->mmdEntryFromTrack($track);
         }
         
@@ -208,6 +211,8 @@ private function mmdFromTracks($tracks) {
     {
       list($a, $album_id, $artist_id) = $this->breakAlbumID($id);
       $tracks = $this->musixAlbumTracks($album_id);
+
+      // TODO fix this
 
       return $this->mmdFromTracks($tracks);
     }
