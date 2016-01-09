@@ -225,7 +225,7 @@ class SonosAPI
         $result->index = 0;
 
         // This media collection is the root browse menu.
-        
+        /*
         $mediaColl[] = array('itemType' => 'favorites',
                              'id' => 'FAVORITES',
                              'title' => l10n("MSG_BROWSE_FAVORITES"));
@@ -238,7 +238,7 @@ class SonosAPI
                              'id' => 'CATALOG',
                              'title' => l10n("MSG_BROWSE_CATALOG"));
         
-
+*/
         $mediaColl[] = array('itemType' => 'collection',
                              'id' => 'PLAYLISTS',
                              'title' => "My Playlists");
