@@ -1,6 +1,6 @@
 <?php
 
-require 'MusixIDManager.php'
+require 'MusixIDManager.php';
 require_once '/app/vendor/rmccue/requests/library/Requests.php'; 
 Requests::register_autoloader();
 
