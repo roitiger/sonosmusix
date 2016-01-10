@@ -1,5 +1,6 @@
 <?php
 
+require 'MusixIDManager.php'
 require_once '/app/vendor/rmccue/requests/library/Requests.php'; 
 Requests::register_autoloader();
 
@@ -18,108 +19,9 @@ class MusixAPI
 
 //require_once '/app/vendor/rmccue/requests/library/Requests.php'; Requests::register_autoloader();
 
-  private function removeBOM($data) {
-      if (0 === strpos(bin2hex($data), 'efbbbf')) {
-         return substr($data, 3);
-      }
+  
 
-      return $data;
-  }
-
-  private function getMCTrackID($id, $fname) 
-  {
-    return 'TRACK:' . $id . ':' . $fname;
-  }
-
-  // Returns TRACK, <id>, <media_filename>
-  private function breakMCTrackID($trackid) 
-  {
-    return explode(":", $trackid, 3);
-  }
-
-  private function getArtistID($id) 
-  {
-    return 'ARTIST:' . $id;
-  }
-
-  // Returns ARTIST, <id>
-  private function breakArtistID($artistid) 
-  {
-    return explode(":", $artistid, 2);
-  }
-
-  private function getPlaylistID($id, $is_public_playlist) 
-  {
-    return 'PLAYLIST:' . ($is_public_playlist ? 'pub' : 'prv') . $id;
-  }
-
-  // Returns PLAYLIST, <id>, <is_public_playlist>
-  private function breakPlaylistID($playlistid, $no_header = False) 
-  {
-    if ($no_header) {
-      $id = $playlistid;
-      $a = 'PLAYLIST';
-    } else {
-      list($a, $id) = explode(":", $playlistid, 2);
-    }
-    $is_public_playlist = (substr($id, 0, 3) == 'pub');
-    $id = substr($id, 3);
-    
-    return [$a, $id, $is_public_playlist];
-  }
-
-  private function getAlbumID($album_id, $artist_id) 
-  {
-    return 'ALBUM:' . $album_id . ':' . $artist_id;
-  }
-
-  // Returns ALBUM, <album_id>, <artist_id>
-  private function breakAlbumID($albumid) 
-  {
-    return explode(":", $albumid, 3);
-  }
-
-  private function mmdEntryFromTrack($track) {
-        $item_id = $this->getMCTrackID($track['ID'], $track['MediaFileName']);
-
-        // Sometimes duration doesnt have the hours
-        $duration = $track['Duration'];
-        if (substr_count($duration, ':') == 1) {
-          $duration = "00:" . $duration; 
-        }
-
-        list($h,$m,$s) = explode(":",$duration);
-        $duration_sec = $s + ($m * 60) + ($h * 60 * 60);
-
-        $info = array('itemType' => 'track',
-             'id'       => $item_id,
-             'title'    => $track['Name'],
-             'mimeType' => 'audio/mp3',
-             'trackMetadata' =>
-               array('artist'      => $track['Artist'],
-                     'artistId'    => "ARTIST:" . $track['ArtistId'],
-                     'album'       => $track['Album'],
-                     'albumId'     => "ALBUM:" . $track['AlbumId'],
-                     'duration'    => $duration_sec,
-                     'index'       => $track['ID'],
-                     'canPlay'     => true,
-                     'canSkip'     => true,
-                     'albumArtURI' => $track['ImageURL'])
-             );
-        $this->mc->set($item_id, $info);
-
-        return $info;
-    }
-
-    function mcEntryFromArtist($artist) {
-        $result = array('itemType' => 'artist',
-                        'id'       => 'ARTIST:' . $artist['ID'],
-                        'artistid' => 'ARTIST:' . $artist['ID'],
-                        'title'    => $artist['Name'],
-                        'albumArtURI' => $artist['ImageURL']);
-
-        return $result;
-    }
+  
 
     
 
@@ -178,28 +80,7 @@ private function mmdFromTracks($tracks) {
         return $result;
       }
 
-      private function mcEntryFromAlbum($artist, $album) {
-        
-        $album_id = $this->getAlbumID($album['ID'], $artist['ID']);
-
-        $result = array('itemType'     => 'album',
-                        'id'           => $album_id,
-                        'title'        => $album['Name'],
-                        'artist'       => $artist['Name'],
-                        'canPlay'      => true,
-                        'canEnumerate' => true,
-                        'canCache'     => true);
-
-        $result['albumArtURI']  = $album['ImageURL'];
-        
-        // ExtendedMetadata has to set artistId and albumId
-        $result['artistId'] = $this->getArtistID($artist['ID']);
-        $result['albumId'] = $album_id;
-
-        return $result;
-    }
-
-    private function mcFromPlaylists($playlists) {
+      private function mcFromPlaylists($playlists) {
 
         $mediaColl = array();
         
@@ -216,9 +97,72 @@ private function mmdFromTracks($tracks) {
         return $result;
       }
 
+      private function mmdEntryFromTrack($track) {
+        $item_id = $this->getMCTrackID($track['ID'], $track['MediaFileName']);
+
+        // Sometimes duration doesnt have the hours
+        $duration = $track['Duration'];
+        if (substr_count($duration, ':') == 1) {
+          $duration = "00:" . $duration; 
+        }
+
+        list($h,$m,$s) = explode(":",$duration);
+        $duration_sec = $s + ($m * 60) + ($h * 60 * 60);
+
+        $info = array('itemType' => 'track',
+             'id'       => $item_id,
+             'title'    => $track['Name'],
+             'mimeType' => 'audio/mp3',
+             'trackMetadata' =>
+               array('artist'      => $track['Artist'],
+                     'artistId'    => "ARTIST:" . $track['ArtistId'],
+                     'album'       => $track['Album'],
+                     'albumId'     => "ALBUM:" . $track['AlbumId'],
+                     'duration'    => $duration_sec,
+                     'index'       => $track['ID'],
+                     'canPlay'     => true,
+                     'canSkip'     => true,
+                     'albumArtURI' => $track['ImageURL'])
+             );
+        $this->mc->set($item_id, $info);
+
+        return $info;
+    }
+
+    function mcEntryFromArtist($artist) {
+        $result = array('itemType' => 'artist',
+                        'id'       => 'ARTIST:' . $artist['ID'],
+                        'artistid' => 'ARTIST:' . $artist['ID'],
+                        'title'    => $artist['Name'],
+                        'albumArtURI' => $artist['ImageURL']);
+
+        return $result;
+    }
+
+      private function mcEntryFromAlbum($artist, $album) {
+        
+        $album_id = MusixIDManager::getAlbumID($album['ID'], $artist['ID']);
+
+        $result = array('itemType'     => 'album',
+                        'id'           => $album_id,
+                        'title'        => $album['Name'],
+                        'artist'       => $artist['Name'],
+                        'canPlay'      => true,
+                        'canEnumerate' => true,
+                        'canCache'     => true);
+
+        $result['albumArtURI']  = $album['ImageURL'];
+        
+        // ExtendedMetadata has to set artistId and albumId
+        $result['artistId'] = MusixIDManager::getArtistID($artist['ID']);
+        $result['albumId'] = $album_id;
+
+        return $result;
+    }
+
     private function mcEntryFromPlaylist($playlist) {
         
-        $playlist_id = $this->getPlaylistID($playlist['ID'], $playlist['IsSocialNetworkShare']);
+        $playlist_id = MusixIDManager::getPlaylistID($playlist['ID'], $playlist['IsSocialNetworkShare']);
 
         $playlist_name = $playlist['Name'];
         if (!isset($playlist['Name']) || (strlen($playlist_name) == 0)) {
@@ -272,7 +216,7 @@ private function mmdFromTracks($tracks) {
 
     public function getPlaylistTracks($id)
     {
-      list($a, $playlist_id, $is_public_playlist) = $this->breakPlaylistID($id, True);
+      list($a, $playlist_id, $is_public_playlist) = MusixIDManager::breakPlaylistID($id, True);
       $tracks = $this->musixPlaylistTracks($playlist_id, $_ENV['MUSIX_USER_ID'], $is_public_playlist);
       return $this->mmdFromTracks($tracks);
     }
@@ -291,7 +235,7 @@ private function mmdFromTracks($tracks) {
 
     private function getJSONURL($url) {
       $resp = Requests::get($url);
-      $json = json_decode($this->removeBOM($resp->body), True);
+      $json = json_decode(MusixAPI::removeBOM($resp->body), True);
       return $json;
     }
 
@@ -335,7 +279,7 @@ private function mmdFromTracks($tracks) {
   }
 
   public function getMediaURL($trackid) {
-      list($str, $id, $fname) = $this->breakMCTrackID($trackid);
+      list($str, $id, $fname) = MusixIDManager::breakMCTrackID($trackid);
 
       $url = 'http://musix-api.mboxltd.com/tokens/GetToken';
       // TODO do proper auth
@@ -360,6 +304,14 @@ private function mmdFromTracks($tracks) {
 
       return $parsed["URL"];
     }
+
+    private static function removeBOM($data) {
+      if (0 === strpos(bin2hex($data), 'efbbbf')) {
+         return substr($data, 3);
+      }
+
+      return $data;
+  }
 
 }
 
