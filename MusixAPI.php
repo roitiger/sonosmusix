@@ -98,7 +98,7 @@ private function mmdFromTracks($tracks) {
       }
 
       private function mmdEntryFromTrack($track) {
-        $item_id = $this->getMCTrackID($track['ID'], $track['MediaFileName']);
+        $item_id = MusixIDManager::getMCTrackID($track['ID'], $track['MediaFileName']);
 
         // Sometimes duration doesnt have the hours
         $duration = $track['Duration'];
