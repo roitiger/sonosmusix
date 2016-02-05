@@ -297,7 +297,7 @@ private function mmdFromTracks($tracks) {
     public function getPlaylistTracks($id)
     {
       list($a, $playlist_id, $is_public_playlist) = MusixIDManager::breakPlaylistID($id, True);
-      $tracks = $this->musixPlaylistTracks($playlist_id, $_ENV['MUSIX_USER_ID'], $is_public_playlist);
+      $tracks = $this->musixPlaylistTracks($playlist_id, $this->mc->get('MUSIX_USER_ID'), $is_public_playlist);
       return $this->mmdFromTracks($tracks);
     }
 
@@ -339,7 +339,7 @@ private function mmdFromTracks($tracks) {
   }
 
   public function getMyPlaylists() {
-    $playlists = $this->musixMyPlaylists($_ENV['MUSIX_USER_ID']);
+    $playlists = $this->musixMyPlaylists($this->mc->get('MUSIX_USER_ID'));
     return $this->mcFromPlaylists($playlists);
   }
 
@@ -364,7 +364,7 @@ private function mmdFromTracks($tracks) {
       $url = 'http://musix-api.mboxltd.com/tokens/GetToken';
       // TODO do proper auth
       $headers = array(
-        'mBoxUserToken' => $_ENV['MUSIX_BEARER_TOKEN'],
+        'mBoxUserToken' => $this->mc->get('MUSIX_BEARER_TOKEN'),
         'User-Agent' => 'Musix/27000 (iPhone; iOS 9.2; Scale/2.00)',
         'Content-Type' => 'application/json',
         'Cookie' => 'ai_user=' . $_ENV['MUSIX_USER_COOKIE'],
@@ -374,7 +374,7 @@ private function mmdFromTracks($tracks) {
 
       $data = array(
         'SongId' => $id,
-        'UserId' => $_ENV['MUSIX_USER_ID'],
+        'UserId' => $this->mc->get('MUSIX_USER_ID'),
         'MediaFileName' => $fname,
         'ServiceId' => '13');
 
