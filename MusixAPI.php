@@ -14,14 +14,94 @@ class MusixAPI
     $this->mc->setOption(Memcached::OPT_BINARY_PROTOCOL, true);
     $this->mc->addServers(array_map(function($server) { return explode(':', $server, 2); }, explode(',', $_ENV['MEMCACHEDCLOUD_SERVERS'])));
     $this->mc->setSaslAuthData($_ENV['MEMCACHEDCLOUD_USERNAME'], $_ENV['MEMCACHEDCLOUD_PASSWORD']);
-     
+
+    # check for cached token
+
+    $cached_token = $this->mc->get('MUSIX_BEARER_TOKEN');
+    $cached_user_id = $this->mc->get('MUSIX_USER_ID');
+
+    $last_auth = $this->mc->get('MUSIX_LAST_AUTH_DATE');
+    $now = new DateTime("now"); // new DateTime("now");
+
+    if ($last_auth && $cached_token && $cached_user_id) {
+      $last_auth_date = DateTime::createFromFormat('Y-m-d', $last_auth);
+      $interval = $now->diff($last_auth_date, true);
+
+      if ($interval->format('%a') < 21) {
+        # we have a token
+
+        error_log("Token valid, skipping auth");
+
+        return;
+      }
+
+      error_log("Performing login. last auth: " . $last_auth_date . " " . $interval->format('%a'));
+    }
+
+    list($user_id, $mbox_token) = $this->login();
+
+    $this->mc->set('MUSIX_BEARER_TOKEN', $mbox_token);
+    $this->mc->set('MUSIX_USER_ID', $user_id);
+    $this->mc->set('MUSIX_LAST_AUTH_DATE', $now->format('Y-m-d'));
+
+    error_log("Logged in. " . $mbox_token . " " . $this->mc->get('MUSIX_BEARER_TOKEN') . $user_id . " " . $this->mc->get('MUSIX_USER_ID'));
   }
 
-//require_once '/app/vendor/rmccue/requests/library/Requests.php'; Requests::register_autoloader();
+  private function postRequest($url, $data) {
+    $headers = array(
+      'User-Agent' => 'Musix/27000 (iPhone; iOS 9.2; Scale/2.00)',
+      'Content-Type' => 'application/json',
+      'Accept' => 'application/json',
+      'Accept-Language' => 'en-US;q=1, he-US;q=0.9',
+      'Accept-Encoding' => 'gzip, deflate');
 
-  
+    $response = Requests::post($url, $headers, json_encode($data));
 
-  
+    return json_decode($response->body, True);
+  }
+
+  private function login() {
+
+    error_log("Login step 1");
+
+    $url = 'https://login.pelephone.co.il/api/GetTokenByUserPassword';
+    # TODO get user/pass from Sonos interface
+    $data = array(
+      'USER' => $_ENV['MUSIX_USER'],
+      'PASSWORD' => $_ENV['MUSIX_PASS'],
+      'ApplicationID' => '274');
+    
+    $parsed = $this->postRequest($url, $data);
+
+    $first_user_token = $parsed["UserToken"];
+
+    error_log("Login step 2");
+
+    $url = 'https://login.pelephone.co.il/api/Auth2User';
+    $data = array(
+      'UserToken' => $first_user_token,
+      'Register' => 'N',
+      'ApplicationID' => '274');
+
+    $parsed = $this->postRequest($url, $data);
+
+    $second_user_token = $parsed["UserToken"];
+    $access_token = $parsed["AccessToken"];
+
+    error_log("Login step 3");
+
+    $url = 'http://musix-api.mboxltd.com/auth/Account/LogOn';
+    $data = array(
+      'UserToken' => $second_user_token,
+      'AccessToken' => $access_token
+    );
+
+    $parsed = $this->postRequest($url, $data);
+
+    error_log("Login done. UserId: " . $parsed["UserId"]);
+
+    return [$parsed["UserId"], $parsed["mBoxUserToken"]];
+  }
 
     
 
