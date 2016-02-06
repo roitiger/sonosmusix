@@ -34,8 +34,6 @@ class MusixAPI
 
         return;
       }
-
-      error_log("Performing login. last auth: " . $last_auth_date . " " . $interval->format('%a'));
     }
 
     list($user_id, $mbox_token) = $this->login();
@@ -44,7 +42,7 @@ class MusixAPI
     $this->mc->set('MUSIX_USER_ID', $user_id);
     $this->mc->set('MUSIX_LAST_AUTH_DATE', $now->format('Y-m-d'));
 
-    error_log("Logged in. " . $mbox_token . " " . $this->mc->get('MUSIX_BEARER_TOKEN') . $user_id . " " . $this->mc->get('MUSIX_USER_ID'));
+    error_log("Logged in.");
   }
 
   private function postRequest($url, $data) {
@@ -62,8 +60,6 @@ class MusixAPI
 
   private function login() {
 
-    error_log("Login step 1");
-
     $url = 'https://login.pelephone.co.il/api/GetTokenByUserPassword';
     # TODO get user/pass from Sonos interface
     $data = array(
@@ -75,8 +71,6 @@ class MusixAPI
 
     $first_user_token = $parsed["UserToken"];
 
-    error_log("Login step 2");
-
     $url = 'https://login.pelephone.co.il/api/Auth2User';
     $data = array(
       'UserToken' => $first_user_token,
@@ -87,8 +81,6 @@ class MusixAPI
 
     $second_user_token = $parsed["UserToken"];
     $access_token = $parsed["AccessToken"];
-
-    error_log("Login step 3");
 
     $url = 'http://musix-api.mboxltd.com/auth/Account/LogOn';
     $data = array(

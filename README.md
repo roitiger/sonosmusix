@@ -1,22 +1,19 @@
-# sonosmusix
+# Sonos-Musix integration
 
-Original sample code: http://musicpartners.sonos.com/sites/default/files/MusicBrainzPHP.tar.gz
+Based on sample code: http://musicpartners.sonos.com/sites/default/files/MusicBrainzPHP.tar.gz
 
-Modified to bridge with Musix - http://www.musix.co.il
+Modified to work with Musix - http://www.musix.co.il
 
 Supported functionality: Search artist/track/playlist, browse artist/album, play tracks.
 
-Setup:
+# Setup
 
-set up heroku app
+- Set up heroku app
+- Add Memcache Cloud add on
+- Set credentials: heroku config:set "MUSIX_USER=YOUR_MUSIX_USER" "MUSIX_PASS=YOUR_MUSIX_PASS"
+- Add the service to Sonos system: http://musicpartners.sonos.com/docs?q=node/134
 
-add memcache add on
+# TODO 
 
-# TODO move user/pass to be set in the Sonos interface
-
-heroku config:set "MUSIX_USER=<user>" "MUSIX_PASS=<pass>"
-
-
-Sonos system setup:
-
-http://musicpartners.sonos.com/docs?q=node/134
+- Move user/pass to be set in the Sonos interface instead of Heroku config var
+- Is cookie env var required?
